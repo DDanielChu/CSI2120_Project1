@@ -15,6 +15,7 @@ public class Program {
     private int[] rol;
     private ArrayList<Integer> matchedResidents; // list of residentIDs
 
+
     // constructs a Program
     public Program(String id, String n, int q) {
         programID = id;
@@ -101,13 +102,13 @@ public class Program {
         return worstID;
     }
 
-    // adds a resident to this program, returns ID so
+    // adds a resident to this program, returns ID
     public Integer addResident(Resident r) {
 
         int residentID = r.getResidentID();
-        int rRank = rank(residentID);
+        int rRank = rank(residentID);	
         if (rRank == -1) {
-            return;
+            return null;
         }
 
 
@@ -116,7 +117,7 @@ public class Program {
 			
             matchedResidents.add(residentID);
             r.setMatchedProgram(this);
-            return;
+            return null;
         }
 
 
@@ -131,7 +132,7 @@ public class Program {
 			return worstID;
         }
 		
-		return;
+		return null;
     }
 
 
