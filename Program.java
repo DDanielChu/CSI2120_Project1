@@ -101,8 +101,8 @@ public class Program {
         return worstID;
     }
 
-    // adds a resident to this program
-    public void addResident(Resident r) {
+    // adds a resident to this program, returns ID so
+    public Integer addResident(Resident r) {
 
         int residentID = r.getResidentID();
         int rRank = rank(residentID);
@@ -128,7 +128,10 @@ public class Program {
             matchedResidents.remove(Integer.valueOf(worstID));
             r.setMatchedProgram(this);
             matchedResidents.add(residentID);
+			return worstID;
         }
+		
+		return;
     }
 
 
