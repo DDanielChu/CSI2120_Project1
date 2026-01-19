@@ -1,62 +1,96 @@
+package ResidentPackage;
+//Project CSI2120/CSI2520
+//Winter 2026
+//Robert Laganiere, uottawa.ca
 
+//this is the (incomplete) Resident class
 public class Resident {
 	
-	private int id;
+	private int residentID;
 	private String firstname;
 	private String lastname;
-	private Program[] rol;
+	private String[] rol;
+	
 	private Program matchedProgram;
 	private int matchedRank;
 	
+	// constructs a Resident
+ public Resident(int id, String fname, String lname) {
+	
+		residentID= id;
+		firstname= fname;
+		lastname= lname;
+	}
+
+
+	public int getResidentID() {
+		return residentID;
+	}
+
+
+	 public void setResidentID(int residentID) {
+		this.residentID = residentID;
+	 }
+
 	
 	
-	
-	public Resident(int id, String firstname, String lastname, Program[] rol, Program matchedProgram, int matchedRank) {
-		super();
-		this.id = id;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.rol = rol;
-		this.matchedProgram = matchedProgram;
-		this.matchedRank = matchedRank;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getFirstname() {
+	 public String getFirstname() {
 		return firstname;
-	}
-	public void setFirstname(String firstname) {
+	 }
+	
+	 public void setFirstname(String firstname) {
 		this.firstname = firstname;
-	}
-	public String getLastname() {
+	 }
+	
+	
+	 public String getLastname() {
 		return lastname;
-	}
-	public void setLastname(String lastname) {
+	 }
+	
+	
+	
+	 public void setLastname(String lastname) {
 		this.lastname = lastname;
+	 }
+	
+	
+	
+	
+	
+	
+	 public Program getMatchedProgram() {
+		return matchedProgram;
+	 }
+	
+	 public void setMatchedProgram(Program matchedProgram) {
+		this.matchedProgram = matchedProgram;
+	 }
+	
+	
+	 public int getMatchedRank() {
+		return matchedRank;
+	 }
+	
+	
+	 public void setMatchedRank(int matchedRank) {
+		this.matchedRank = matchedRank;
+	 }
+
+	// the rol in order of preference
+	public void setROL(String[] rol) {
+		
+		this.rol= rol;
 	}
-	public Program[] getRol() {
+	
+	
+	public String[] getRol() {
 		return rol;
 	}
-	public void setRol(Program[] rol) {
-		this.rol = rol;
-	}
-	public Program getMatchedProgram() {
-		return matchedProgram;
-	}
-	public void setMatchedProgram(Program matchedProgram) {
-		this.matchedProgram = matchedProgram;
-	}
-	public int getMatchedRank() {
-		return matchedRank;
-	}
-	public void setMatchedRank(int matchedRank) {
-		this.matchedRank = matchedRank;
-	}
 	
 	
-	
+	// string representation
+	public String toString() {
+   
+    return "["+residentID+"]: "+firstname+" "+ lastname+" ("+rol.length+")";	  
+	}
 }
