@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 public class Program {
 
-    private String programID;      // 3-letter program ID
-    private String name;           // program name
-    private int quota;             // number of available positions
-    private int[] rol;             // rank order list of resident IDs
+    // Attributes
+    private String programID;
+    private String name;
+    private int quota;
+    private int[] rol;
     private ArrayList<Resident> matchedResidents;
 
     // constructs a Program
@@ -22,80 +23,119 @@ public class Program {
         matchedResidents = new ArrayList<>();
     }
 
-    // sets the rank order list
+
+    // Getters
+    public String getProgramID() {
+        return programID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getQuota() {
+        return quota;
+    }
+
+    public int[] getROL() {
+        return rol;
+    }
+
+    public ArrayList<Resident> getMatchedResidents() {
+        return matchedResidents;
+    }
+
+
+    // Setters
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setQuota(int quota) {
+        this.quota = quota;
+    }
+
+    // the rol in order of preference
     public void setROL(int[] rol) {
         this.rol = rol;
     }
+	
+	
+	// Other methods
 
-    // returns true if residentID is in this program's ROL
+    // return true if residentID is in program's ROL
     public boolean member(int residentID) {
+
         for (int i = 0; i < rol.length; i++) {
             if (rol[i] == residentID) {
                 return true;
             }
         }
+
         return false;
     }
 
-    // returns the rank of a resident in the ROL, or -1 if not found
+    // return rank of a resident in the ROL, else -1
     public int rank(int residentID) {
+
         for (int i = 0; i < rol.length; i++) {
             if (rol[i] == residentID) {
                 return i;
             }
         }
+
         return -1;
     }
 
-    // returns the least preferred currently matched resident
+    // return least preferred currently matched resident
     public Resident leastPreferred() {
+
         Resident worst = null;
         int worstRank = -1;
 
         for (Resident r : matchedResidents) {
-            int rRank = rank(r.getID());
+			
+            int rRank = rank(r.getResidentID());
             if (rRank > worstRank) {
                 worstRank = rRank;
                 worst = r;
             }
         }
+
         return worst;
     }
 
-    // tries to add a resident to this program
+    // adds a resident to this program
     public void addResident(Resident r) {
 
-        int rRank = rank(r.getID());
+        int rRank = rank(r.getResidentID());
 
-        // resident not acceptable
         if (rRank == -1) {
             return;
         }
 
         // program not full
         if (matchedResidents.size() < quota) {
+			
             matchedResidents.add(r);
             r.setMatchedProgram(this);
             return;
         }
 
-        // program full → compare with least preferred
+        // program full
         Resident worst = leastPreferred();
-        int worstRank = rank(worst.getID());
+        int worstRank = rank(worst.getResidentID());
 
         if (rRank < worstRank) {
+			
             matchedResidents.remove(worst);
-            worst.unmatch();
+            worst.setMatchedProgram(null);
 
             matchedResidents.add(r);
             r.setMatchedProgram(this);
         }
     }
 
-    // returns number of remaining positions
-    public int availablePositions() {
-        return quota - matchedResidents.size();
-    }
 
     // string representation
     public String toString() {
