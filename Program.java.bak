@@ -23,6 +23,7 @@ public class Program {
         matchedResidents = new ArrayList<>();
     }
 
+
     // Getters
     public String getProgramID() {
         return programID;
@@ -44,6 +45,7 @@ public class Program {
         return matchedResidents;
     }
 
+
     // Setters
     public void setName(String name) {
         this.name = name;
@@ -57,6 +59,9 @@ public class Program {
     public void setROL(int[] rol) {
         this.rol = rol;
     }
+	
+	
+	// Other methods
 
     // return true if residentID is in program's ROL
     public boolean member(int residentID) {
@@ -89,6 +94,7 @@ public class Program {
         int worstRank = -1;
 
         for (Resident r : matchedResidents) {
+			
             int rRank = rank(r.getResidentID());
             if (rRank > worstRank) {
                 worstRank = rRank;
@@ -110,6 +116,7 @@ public class Program {
 
         // program not full
         if (matchedResidents.size() < quota) {
+			
             matchedResidents.add(r);
             r.setMatchedProgram(this);
             return;
@@ -120,6 +127,7 @@ public class Program {
         int worstRank = rank(worst.getResidentID());
 
         if (rRank < worstRank) {
+			
             matchedResidents.remove(worst);
             worst.setMatchedProgram(null);
 
@@ -128,10 +136,6 @@ public class Program {
         }
     }
 
-    // returns number of remaining positions
-    public int availablePositions() {
-        return quota - matchedResidents.size();
-    }
 
     // string representation
     public String toString() {

@@ -13,7 +13,7 @@ public class Program {
     private String name;
     private int quota;
     private int[] rol;
-    private ArrayList<Resident> matchedResidents;
+    private ArrayList<Integer> matchedResidents; // list of residentIDs
 
     // constructs a Program
     public Program(String id, String n, int q) {
@@ -41,10 +41,9 @@ public class Program {
         return rol;
     }
 
-    public ArrayList<Resident> getMatchedResidents() {
+    public ArrayList<Integer> getMatchedResidents() {
         return matchedResidents;
     }
-
 
     // Setters
     public void setName(String name) {
@@ -59,80 +58,76 @@ public class Program {
     public void setROL(int[] rol) {
         this.rol = rol;
     }
-	
-	
+
+
 	// Other methods
 
     // return true if residentID is in program's ROL
     public boolean member(int residentID) {
-
+		
         for (int i = 0; i < rol.length; i++) {
             if (rol[i] == residentID) {
                 return true;
             }
         }
-
         return false;
     }
 
     // return rank of a resident in the ROL, else -1
     public int rank(int residentID) {
-
+		
         for (int i = 0; i < rol.length; i++) {
             if (rol[i] == residentID) {
                 return i;
             }
         }
-
         return -1;
     }
 
-    // return least preferred currently matched resident
-    public Resident leastPreferred() {
+    // return least preferred currently matched resident ID
+    public int leastPreferred() {
 
-        Resident worst = null;
+        int worstID = -1;
         int worstRank = -1;
 
-        for (Resident r : matchedResidents) {
-			
-            int rRank = rank(r.getResidentID());
+        for (int residentID : matchedResidents) {
+            int rRank = rank(residentID);
             if (rRank > worstRank) {
                 worstRank = rRank;
-                worst = r;
+                worstID = residentID;
             }
         }
 
-        return worst;
+        return worstID;
     }
 
     // adds a resident to this program
     public void addResident(Resident r) {
 
-        int rRank = rank(r.getResidentID());
-
+        int residentID = r.getResidentID();
+        int rRank = rank(residentID);
         if (rRank == -1) {
             return;
         }
 
+
         // program not full
         if (matchedResidents.size() < quota) {
 			
-            matchedResidents.add(r);
+            matchedResidents.add(residentID);
             r.setMatchedProgram(this);
             return;
         }
 
-        // program full
-        Resident worst = leastPreferred();
-        int worstRank = rank(worst.getResidentID());
 
+        // program full
+        int worstID = leastPreferred();
+        int worstRank = rank(worstID);
         if (rRank < worstRank) {
 			
-            matchedResidents.remove(worst);
-            worst.setMatchedProgram(null);
-
-            matchedResidents.add(r);
+            matchedResidents.remove(Integer.valueOf(worstID));
             r.setMatchedProgram(this);
+            matchedResidents.add(residentID);
         }
     }
 
