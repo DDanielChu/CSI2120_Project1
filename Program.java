@@ -1,3 +1,5 @@
+
+
 // Project CSI2120 / CSI2520
 // Winter 2026
 // Robert Laganiere, uottawa.ca
@@ -107,7 +109,7 @@ public class Program {
         int residentID = r.getResidentID();
         int rRank = rank(residentID);
         if (rRank == -1) {
-            return;
+            return null;
         }
 
 
@@ -116,7 +118,7 @@ public class Program {
 			
             matchedResidents.add(residentID);
             r.setMatchedProgram(this);
-            return;
+            return null;
         }
 
 
@@ -124,14 +126,13 @@ public class Program {
         int worstID = leastPreferred();
         int worstRank = rank(worstID);
         if (rRank < worstRank) {
-			
             matchedResidents.remove(Integer.valueOf(worstID));
             r.setMatchedProgram(this);
             matchedResidents.add(residentID);
 			return worstID;
         }
 		
-		return;
+		return null;
     }
 
 

@@ -1,4 +1,3 @@
-package ResidentPackage;
 //Project CSI2120/CSI2520
 //Winter 2026
 //Robert Laganiere, uottawa.ca
@@ -20,6 +19,8 @@ public class Resident {
 		residentID= id;
 		firstname= fname;
 		lastname= lname;
+		
+		matchedProgram = null;
 	}
 
 

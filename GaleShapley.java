@@ -1,8 +1,15 @@
+
 // Project CSI2120/CSI2520
 // Winter 2026
 // Robert Laganiere, uottawa.ca
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
+
 
 // this is the (incomplete) class that will generate the resident and program maps
 public class GaleShapley {
@@ -10,13 +17,107 @@ public class GaleShapley {
 	public HashMap<Integer,Resident> residents;
 	public HashMap<String,Program> programs;
 	
+	private ArrayList<Integer> unmatched = new ArrayList<>();
+	
+	
 
 	public GaleShapley(String residentsFilename, String programsFilename) throws IOException, 
 													NumberFormatException {
-		
 		readResidents(residentsFilename);
 		readPrograms(programsFilename);
+		
+		galeShapleyAlgorithm();
+		
+		
 	}
+	
+	
+	
+	
+	public void unMatchPeople(Integer residentID) {
+		Resident resident = residents.get(residentID);
+		resident.setMatchedRank(-1);
+		resident.setMatchedProgram(null);
+		
+		unmatched.add(residentID);
+		
+		
+	}
+	
+	
+	public void galeShapleyAlgorithm() {
+		
+		for (Integer key : residents.keySet()) {
+			unmatched.add(key);
+		}
+		
+		
+		boolean change = true;
+		
+		int index = unmatched.size()-1;
+		
+		while (!unmatched.isEmpty()) {
+			
+			if (index == unmatched.size()-1) {
+				if (!change){
+					break;
+				}
+				
+				change = false;
+			
+			}
+			
+			Resident resident = residents.get(unmatched.get(index));
+			
+			
+			String[] residentROL = resident.getRol();
+			
+			
+			
+			for (int counter = 0; counter < residentROL.length; counter++) {
+				
+				Integer seeIfAnotherPersonWasRemoved = programs.get(residentROL[counter]).addResident(resident);
+				
+				if (seeIfAnotherPersonWasRemoved != null) {
+					unMatchPeople(seeIfAnotherPersonWasRemoved);
+					unmatched.remove(Integer.valueOf(resident.getResidentID()));
+					change = true;
+					break;
+				}
+				
+				if(resident.getMatchedProgram() != null) {
+					unmatched.remove(Integer.valueOf(resident.getResidentID()));
+					change = true;
+					break;
+					
+				}
+				
+				
+				
+			}
+			
+			index --;
+			
+			
+			
+			if (index == -1){
+				index = unmatched.size()-1;
+			}
+			
+			
+			
+			
+			
+				
+				
+			}
+				
+			
+			
+		}
+		
+	
+	
 	
 	// Reads the residents csv file
 	// It populates the residents HashMap
@@ -178,6 +279,11 @@ public class GaleShapley {
 			programs.put(programID,program);
 		}	
     }
+	
+	
+	
+	
+	
 
 	public static void main(String[] args) {
 		
@@ -188,6 +294,41 @@ public class GaleShapley {
 			
 			System.out.println(gs.residents);
 			System.out.println(gs.programs);
+			
+			System.out.println("\n\n\n\nlastname,firstname,residentID,programID,name");
+
+
+			List<Resident> residentList = new ArrayList<>(gs.residents.values());
+
+			residentList.sort(Comparator.comparing(Resident::getLastname).thenComparing(Resident::getFirstname));
+
+			
+			
+			for (Resident resident: residentList) {
+				System.out.print(resident.getLastname() + ", ");
+				System.out.print(resident.getFirstname()+ ", ");
+				System.out.print(resident.getResidentID()+ ", ");
+				
+				if (resident.getMatchedProgram() == null){
+					System.out.print("XXX"+ ", ");
+				}
+				
+				else{
+					System.out.print(resident.getMatchedProgram().getProgramID()+ ", ");
+				}
+				
+				
+				if (resident.getMatchedProgram() == null){
+					System.out.print("NOT MATCHED"+ ", ");
+				}
+				
+				else{
+					System.out.print(resident.getMatchedProgram().getName());
+				}
+				
+				System.out.println();
+			}
+			
 			
         } catch (Exception e) {
             System.err.println("Error reading the file: " + e.getMessage());
