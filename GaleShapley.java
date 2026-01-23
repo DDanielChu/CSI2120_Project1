@@ -25,6 +25,7 @@ public class GaleShapley {
 													NumberFormatException {
 		readResidents(residentsFilename);
 		readPrograms(programsFilename);
+
 		
 		galeShapleyAlgorithm();
 		
@@ -33,7 +34,8 @@ public class GaleShapley {
 	
 	
 	
-	
+	//Makes sure that it puts the resident into the unmatched array
+	//Also ensures that the resident does not have a matched rank or matched program
 	public void unMatchPeople(Integer residentID) {
 		Resident resident = residents.get(residentID);
 		resident.setMatchedRank(-1);
@@ -44,40 +46,65 @@ public class GaleShapley {
 		
 	}
 	
-	
+	//Goes through the entirety of the resident HashMap and tries to match them with their preferred programs
+	//If they don't get any of their preferred programs, then they will be unmatched
 	public void galeShapleyAlgorithm() {
 		
+		
+		//Initially, all of the residents are unmatched
+		//This will put their student number into the unmatched array
 		for (Integer key : residents.keySet()) {
 			unmatched.add(key);
 		}
 		
-		
+		//This boolean holds a boolean value to see if anyone was matched or unmatched
 		boolean change = true;
 		
+		//Will start from the last index so that if I remove a person from the unmatched array
+		//it won't affect the process of going through each resident 
 		int index = unmatched.size()-1;
 		
+		//Keeps going until everyone is matched, or no one can be matched to their preferred program
 		while (!unmatched.isEmpty()) {
 			
+			//Every time the while loop goes through the entire array
+			//it checks if anyone has been unmatched or matched. 
+			//If no one has been matched or unmatched, then that means that no one can be matched to their preferred program
+			//Therefore, it will break the while loop
+			//Otherwise, if there has been a change, then it will continue the loop and set change to false
 			if (index == unmatched.size()-1) {
 				if (!change){
 					break;
-				}
-				
+				}	
 				change = false;
-			
 			}
 			
+			//Gets a random resident from the hashmap 
 			Resident resident = residents.get(unmatched.get(index));
 			
 			
+			//Gets the residents Ranked Order List
 			String[] residentROL = resident.getRol();
 			
-			
-			
+			//Goes through the Ranked Order List and tries to pair them up with their preferred program
 			for (int counter = 0; counter < residentROL.length; counter++) {
 				
+				//the addResident() method in the Program class checks three cases
+			
+				//1. If the person is in the programs ROL
+					//1.1 if not then return null
+					
+				//2. If the quota size is reached
+					//2.1 If not then change the person's program and then return null
+						//2.1.1 This will trigger the second if statement
+
+				//3 If there is another person that is ranked lower than them on the program's ROL that is currently in the program list
+					//3.1 Remove the lower ranked person, and put the new resident into the list and return the ID of the removed person
+						//3.1.1 This will trigger the first If statement
 				Integer seeIfAnotherPersonWasRemoved = programs.get(residentROL[counter]).addResident(resident);
 				
+				//Removes the lower ranked person on the program's list and makes them unmatched
+				//Removes the new resident from the unmatched array
 				if (seeIfAnotherPersonWasRemoved != null) {
 					unMatchPeople(seeIfAnotherPersonWasRemoved);
 					unmatched.remove(Integer.valueOf(resident.getResidentID()));
@@ -85,6 +112,7 @@ public class GaleShapley {
 					break;
 				}
 				
+				//Removes the new residednt from the unmatched array
 				if(resident.getMatchedProgram() != null) {
 					unmatched.remove(Integer.valueOf(resident.getResidentID()));
 					change = true;
@@ -92,29 +120,20 @@ public class GaleShapley {
 					
 				}
 				
-				
-				
 			}
 			
+			//Goes down up the array
 			index --;
 			
-			
-			
+			//Once the array goes through the entire array, it loops back to the end
 			if (index == -1){
 				index = unmatched.size()-1;
 			}
-			
-			
-			
-			
-			
 				
-				
-			}
-				
-			
-			
 		}
+				
+			
+	}
 		
 	
 	
@@ -292,18 +311,21 @@ public class GaleShapley {
 			
 			GaleShapley gs= new GaleShapley(args[0],args[1]);
 			
-			System.out.println(gs.residents);
-			System.out.println(gs.programs);
 			
-			System.out.println("\n\n\n\nlastname,firstname,residentID,programID,name");
+			//Places the output into a file called TestOutput
+			PrintStream fileStream = new PrintStream(new File("TestOutput.txt"));
+			System.setOut(fileStream);
+			
+			
+			
+			System.out.println("lastname,firstname,residentID,programID,name");
 
-
+			//Sorts out the results alphabetically based on the residents' first names
 			List<Resident> residentList = new ArrayList<>(gs.residents.values());
-
 			residentList.sort(Comparator.comparing(Resident::getLastname).thenComparing(Resident::getFirstname));
-
+				
 			
-			
+			//Goes through the residents and outputs the results of their program acceptances
 			for (Resident resident: residentList) {
 				System.out.print(resident.getLastname() + ", ");
 				System.out.print(resident.getFirstname()+ ", ");
@@ -328,6 +350,18 @@ public class GaleShapley {
 				
 				System.out.println();
 			}
+			
+			System.out.println("\nNumber of unmatched residents: " + gs.unmatched.size());
+			
+			
+			
+			//Goes through all of the programs and sees if there are any leftoever quotas
+			int totalNumberOfQuotasLeft = 0;
+			for (String key: gs.programs.keySet()) {
+				Program program = gs.programs.get(key);
+				totalNumberOfQuotasLeft += program.getQuota() - program.getMatchedResidents().size();
+			}
+			System.out.println("Number of positions available: " + totalNumberOfQuotasLeft);
 			
 			
         } catch (Exception e) {
