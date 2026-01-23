@@ -44,6 +44,8 @@ public class GaleShapley2 {
 			int residentID = unmatched.remove(0);
 			Resident r = residents.get(residentID);
 
+			boolean matchedThisRound = false;
+
 
 			// for all programs in the residents ROL
 			for (String progID : r.getRol()) {
@@ -60,6 +62,7 @@ public class GaleShapley2 {
 					prog.addResident(r);                     	
 					matches.put(residentID, progID);  
 					
+					matchedThisRound = true;
 					break;
 				} 
 				else if (prog.rank(residentID) > prog.leastPreferred()) {    // If quota full and resident is more preferred then least preferred
@@ -73,6 +76,7 @@ public class GaleShapley2 {
 					leastPrefRes.setMatchedProgram(null);
 					unmatched.add(leastPrefID);
 
+					matchedThisRound = true;
 					break;                                    
 				}
 			}
@@ -292,7 +296,7 @@ public class GaleShapley2 {
 				System.out.println();
 			}
 			
-			System.out.println("\nNumber of unmatched residents: " + gs.unmatched.size());
+			System.out.println("\nNumber of unmatched residents: " + gs.unableToBeMatched.size());
 			
 			
 			
