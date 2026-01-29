@@ -14,7 +14,7 @@ public class Resident {
 	private int matchedRank;
 	
 	// constructs a Resident
- public Resident(int id, String fname, String lname) {
+	public Resident(int id, String fname, String lname) {
 	
 		residentID= id;
 		firstname= fname;
